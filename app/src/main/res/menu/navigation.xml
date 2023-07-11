@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ExtraText">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/round_home"
+        android:title="@string/home"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/favorites"
+        android:icon="@drawable/round_favorite_border"
+        android:title="@string/favorites"
+        app:showAsAction="withText" />
+
+    <item
+        android:id="@+id/selections"
+        android:icon="@drawable/round_arrow_back_ios"
+        android:title="@string/back"
+        app:showAsAction="withText" />
+
+</menu>

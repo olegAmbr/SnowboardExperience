@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Snowboard experience</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Домой</string>
+    <string name="favorites">Избранное</string>
+    <string name="back">Назад</string>
+    <string name="menu_settings_title">Snow</string>
+</resources>
