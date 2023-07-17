@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
 
             // Инициализация Dagger
-            val component = AppComponent.builder().build()
+            val component = DaggerAppComponent.builder().build()
             component.inject(this)
 
             // Теперь вы можете использовать someDependency в активности
@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, HomeFragment())
                 .commit()
         }
-
 
     }
     fun navigateTo(fragment: Fragment) {
