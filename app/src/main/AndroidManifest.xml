@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.snowboardexperience.databinding">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
@@ -21,6 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.youtube.api.key"
+            android:value="AIzaSyDqVjfBPKi0RzjEwPHQhItAyVz6sYaB35M" />
+
     </application>
 
 </manifest>
