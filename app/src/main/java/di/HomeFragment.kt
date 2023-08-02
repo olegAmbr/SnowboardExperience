@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.example.snowboardexperience.R
 import com.example.snowboardexperience.databinding.FragmentHomeBinding
 
     class HomeFragment : Fragment() {
@@ -18,8 +16,8 @@ import com.example.snowboardexperience.databinding.FragmentHomeBinding
             container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View {
-            val binding: FragmentHomeBinding = DataBindingUtil
-                .inflate(inflater, R.layout.fragment_home, container, false)
+            binding = FragmentHomeBinding.inflate(inflater, container, false)
+            // Доступ к элементам разметки через объект привязки
             return binding.root
         }
 

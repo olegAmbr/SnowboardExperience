@@ -6,4 +6,10 @@
     <string name="favorites">Избранное</string>
     <string name="back">Назад</string>
     <string name="menu_settings_title">Snow</string>
+    <string name="skiing">КАТАНИЕ,
+        ТЕХНИКА</string>
+    <string name="equip">СНАРЯЖЕНИЕ</string>
+    <string name="conditions">УСЛОВИЯ
+        КАТАНИЯ</string>
+    <string name="places">ГОРНОЛЫЖНЫЕ КУРОРТЫ</string>
 </resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="techData"
+            type="di.TechDataBase" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- Изображение -->
+        <ImageView
+            android:id="@+id/techItemImageDetails"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@{di.TechDataBase.img}"
+            android:scaleType="centerCrop" />
+
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/techItemTitleDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/techItemImageDetails"
+            android:text="@{di.TechDataBase.title}"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Описание -->
+        <TextView
+            android:id="@+id/techItemDescriptionDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/techItemTitleDetails"
+            android:text="@{di.TechDataBase.description}"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+</layout>

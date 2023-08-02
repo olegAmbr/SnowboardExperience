@@ -13,7 +13,7 @@
             android:id="@+id/topAppBarMenu"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_500"
+            android:background="@color/black"
             app:itemIconTint="@color/teal_200"
             app:menu="@menu/top_app_bar_menu"
             app:navigationIcon="@drawable/round_menu"
@@ -27,16 +27,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigationMenu"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topAppBarMenu" />
 
-            />
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/purple_500"
+            android:background="@color/black"
             app:itemIconTint="@color/teal_200"
             app:itemTextColor="@color/teal_200"
             app:labelVisibilityMode="labeled"
