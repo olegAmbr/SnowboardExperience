@@ -1,46 +1,32 @@
 package di
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.snowboardexperience.databinding.TechItemBinding
 
-class TechRVAdapter(private val onItemClick: (TechDataBase) -> Unit) :
-    RecyclerView.Adapter<TechRVAdapter.TechItemViewHolder>() {
 
-    private val items = mutableListOf<TechDataBase>()
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<TechDataBase>) {
-        items.clear()
-        items.addAll(data)
-        notifyDataSetChanged()
-    }
+class TechRVAdapter(private val items: List<TechItem>, private val onItemClick: (TechItem) -> Unit) : RecyclerView.Adapter<TechRVAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TechItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = TechItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TechItemViewHolder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: TechItemViewHolder, position: Int) {
-        holder.bind(items[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = items[position]
+        holder.bind(item)
+        holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
     override fun getItemCount(): Int = items.size
 
-    inner class TechItemViewHolder(private val binding: TechItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: TechItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.setOnClickListener {
-                onItemClick(items[adapterPosition])
-            }
-        }
-
-        fun bind(data: TechDataBase) {
-            binding.img.setImageResource(data.img)
-            binding.title.text = data.title
+        fun bind(item: TechItem) {
+            binding.techItemImage.setImageResource(item.img)
+            binding.techItemTitle.text = item.title
         }
     }
 }

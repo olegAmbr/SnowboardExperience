@@ -12,4 +12,6 @@
     <string name="conditions">УСЛОВИЯ
         КАТАНИЯ</string>
     <string name="places">ГОРНОЛЫЖНЫЕ КУРОРТЫ</string>
+    <string name="fab_favorites_description">В избранное</string>
+    <string name="share_action_description">Поделиться</string>
 </resources>
