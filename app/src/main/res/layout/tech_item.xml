@@ -24,7 +24,8 @@
         android:id="@+id/techItemImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/techItemTitle"

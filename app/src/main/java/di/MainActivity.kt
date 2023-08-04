@@ -18,6 +18,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Установить Toolbar как ActionBar
+        setSupportActionBar(binding.topAppBarMenu)
+
+        // Установить своё собственное название для активити
+        supportActionBar?.title = "Snow"
+
         if (savedInstanceState == null) {
             // При первом создании активности добавляем MainFragment в контейнер
             supportFragmentManager.beginTransaction()
@@ -36,6 +42,7 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, HomeFragment())
                 .commit()
         }
+
 
     }
     fun navigateTo(fragment: Fragment) {
