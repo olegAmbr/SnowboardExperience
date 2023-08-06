@@ -7,7 +7,7 @@ import com.example.snowboardexperience.databinding.TechItemBinding
 
 
 
-class TechRVAdapter(private val items: List<TechItem>, private val onItemClick: (TechItem) -> Unit) : RecyclerView.Adapter<TechRVAdapter.ViewHolder>() {
+class TechRVAdapter(private val items: List<TechItem>, param: TechItemClickListener) : RecyclerView.Adapter<TechRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = TechItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -17,7 +17,6 @@ class TechRVAdapter(private val items: List<TechItem>, private val onItemClick: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
-        holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
     override fun getItemCount(): Int = items.size
@@ -27,6 +26,6 @@ class TechRVAdapter(private val items: List<TechItem>, private val onItemClick: 
         fun bind(item: TechItem) {
             binding.techItemImage.setImageResource(item.img)
             binding.techItemTitle.text = item.title
-        }
     }
+}
 }

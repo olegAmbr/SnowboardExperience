@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.snowboardexperience.R
 import com.example.snowboardexperience.databinding.FragmentTechItemDetailsBinding
+import com.google.android.material.snackbar.Snackbar
 
+@Suppress("DEPRECATION")
 class TechItemDetailsFragment : Fragment() {
 
     private var _binding: FragmentTechItemDetailsBinding? = null
@@ -21,6 +23,7 @@ class TechItemDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTechItemDetailsBinding.inflate(inflater, container, false)
+        setupFabFavorites()
         return binding.root
     }
 
@@ -35,7 +38,7 @@ class TechItemDetailsFragment : Fragment() {
 
         arguments?.getParcelable<TechItem>(ARG_TECH_ITEM)?.let {
             // Используйте techItem для установки деталей в вашем фрагменте
-            setTechItemDetails(techItem)
+            setTechItemDetails()
         }
         binding.detailsFabFavorites.setOnClickListener {
             if (!this.techItem.isInFavorites) {
@@ -64,7 +67,7 @@ class TechItemDetailsFragment : Fragment() {
         }
     }
 
-    private fun setTechItemDetails(techItem: TechItem) {
+    private fun setTechItemDetails() {
         //Получаем наш фильм из переданного бандла
         this.techItem = arguments?.get("techItem") as TechItem
 
@@ -101,5 +104,27 @@ class TechItemDetailsFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
+        // Перегруженная версия для передачи TechItem
+        fun newInstance(techItem: TechItem): TechItemDetailsFragment {
+            val args = Bundle()
+            args.putParcelable(ARG_TECH_ITEM, techItem)
+            val fragment = TechItemDetailsFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
+    private fun setupFabFavorites() {
+        binding.detailsFabFavorites.setOnClickListener {
+            addToFavorites(techItem)
+            showSnackBar("Added to Favorites")
+        }
+    }
+
+    private fun addToFavorites(techItem: TechItem) {
+        FavoritesManager.addFavorite(techItem)
+    }
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 }

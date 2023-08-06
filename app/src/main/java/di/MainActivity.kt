@@ -43,6 +43,38 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+        fun changeFragment(fragment: Fragment, tag: String) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, fragment, tag)
+                .addToBackStack(null)
+                .commit()
+        }
+
+        fun checkFragmentExistence(tag: String): Fragment? =
+            supportFragmentManager.findFragmentByTag(tag)
+
+        binding.bottomNavigationMenu.setOnNavigationItemSelectedListener {
+
+            when (it.itemId) {
+                R.id.home -> {
+                    val tag = "home"
+                    val fragment = checkFragmentExistence(tag)
+                    //В первом параметре, если фрагмент не найден и метод вернул null, то с помощью
+                    //элвиса мы вызываем создание нового фрагмента
+                    changeFragment(fragment ?: HomeFragment(), tag)
+                    true
+                }
+                R.id.favorites -> {
+                    val tag = "favorites"
+                    val fragment = checkFragmentExistence(tag)
+                    changeFragment(fragment ?: FavoritesFragment(), tag)
+                    true
+                }
+
+                else -> false
+            }
+        }
 
     }
     fun navigateTo(fragment: Fragment) {

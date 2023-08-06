@@ -42,9 +42,15 @@ class SkiingTechFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = TechRVAdapter(items) { selectedItem ->
-            openDetailPage(selectedItem)
-        }
+        val adapter = TechRVAdapter(items, object : TechItemClickListener {
+            override fun onItemClick(techItem: TechItem) {
+                val detailsFragment = TechItemDetailsFragment.newInstance(techItem)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        })
 
         binding.techRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
