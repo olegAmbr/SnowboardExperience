@@ -10,7 +10,8 @@ import com.example.snowboardexperience.databinding.FragmentFavoritesBinding
 
 class FavoritesFragment : Fragment() {
     private lateinit var binding: FragmentFavoritesBinding
-    private val favorites: MutableList<TechItem> = mutableListOf() // Здесь храните список избранных элементов
+    private val favorites: MutableList<TechItem> =
+        mutableListOf() // Здесь храните список избранных элементов
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,21 +23,15 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = TechRVAdapter(favorites, object : TechItemClickListener {
+        val adapter = TechRVAdapter(SkiingTechFragment().items, object : TechItemClickListener {
             override fun onItemClick(techItem: TechItem) {
-                // Откройте детали избранного элемента при нажатии на него
-                showTechItemDetails(techItem)
+                val detailsFragment = TechItemDetailsFragment.newInstance(techItem)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit()
             }
         })
         binding.rvFavorites.adapter = adapter
     }
-
-    private fun showTechItemDetails(techItem: TechItem) {
-        val detailsFragment = TechItemDetailsFragment.newInstance(techItem)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.container, detailsFragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
 }

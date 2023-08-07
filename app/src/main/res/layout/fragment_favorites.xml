@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<FrameLayout xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/favorites_fragment_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/round_favorite"
-    android:visibility="invisible"
-    tools:visibility="visible">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFavorites"
+    <FrameLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/favorites_fragment_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/tech_item" />
+        android:background="@drawable/round_favorite"
+        android:visibility="invisible"
+        tools:visibility="visible">
 
-</FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFavorites"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/tech_item" />
+
+    </FrameLayout>
 </layout>

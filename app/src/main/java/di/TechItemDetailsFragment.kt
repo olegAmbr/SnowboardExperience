@@ -68,14 +68,12 @@ class TechItemDetailsFragment : Fragment() {
     }
 
     private fun setTechItemDetails() {
-        //Получаем наш фильм из переданного бандла
-        this.techItem = arguments?.get("techItem") as TechItem
+        // Получаем наш объект TechItem из переданных аргументов
+        this.techItem = arguments?.getParcelable(ARG_TECH_ITEM) ?: return
 
-        //Устанавливаем заголовок
+        // Остальной код остается без изменений
         binding.detailsToolbar.title = this.techItem.title
-        //Устанавливаем картинку
         binding.techItemImageDetails.setImageResource(this.techItem.img)
-        //Устанавливаем описание
         binding.techItemDescriptionDetails.text = this.techItem.description
 
         binding.detailsFabFavorites.setImageResource(
@@ -95,28 +93,20 @@ class TechItemDetailsFragment : Fragment() {
         private const val ARG_TITLE = "title"
         private const val ARG_DESCRIPTION = "description"
 
-        fun newInstance(imageResId: Int, title: String, description: String): TechItemDetailsFragment {
-            val args = Bundle()
-            args.putInt(ARG_IMG, imageResId)
-            args.putString(ARG_TITLE, title)
-            args.putString(ARG_DESCRIPTION, description)
-            val fragment = TechItemDetailsFragment()
-            fragment.arguments = args
-            return fragment
-        }
         // Перегруженная версия для передачи TechItem
         fun newInstance(techItem: TechItem): TechItemDetailsFragment {
+            val fragment = TechItemDetailsFragment()
             val args = Bundle()
             args.putParcelable(ARG_TECH_ITEM, techItem)
-            val fragment = TechItemDetailsFragment()
             fragment.arguments = args
             return fragment
         }
     }
+
     private fun setupFabFavorites() {
         binding.detailsFabFavorites.setOnClickListener {
             addToFavorites(techItem)
-            showSnackBar("Added to Favorites")
+            showSnackBar("Добавлено в избранное")
         }
     }
 

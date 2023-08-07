@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.snowboardexperience.databinding.TechItemBinding
 
-
-
-class TechRVAdapter(private val items: List<TechItem>, param: TechItemClickListener) : RecyclerView.Adapter<TechRVAdapter.ViewHolder>() {
+class TechRVAdapter(
+    private val items: List<TechItem>,
+    private val itemClickListener: TechItemClickListener
+) : RecyclerView.Adapter<TechRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = TechItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -21,11 +22,15 @@ class TechRVAdapter(private val items: List<TechItem>, param: TechItemClickListe
 
     override fun getItemCount(): Int = items.size
 
-    inner class ViewHolder(private val binding: TechItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: TechItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TechItem) {
             binding.techItemImage.setImageResource(item.img)
             binding.techItemTitle.text = item.title
+            binding.root.setOnClickListener {
+                itemClickListener.onItemClick(item)
+            }
+        }
     }
-}
 }

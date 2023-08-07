@@ -10,6 +10,7 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
     @Inject
     lateinit var dependency: Dependency
 
@@ -77,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
     fun navigateTo(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
