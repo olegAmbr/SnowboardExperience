@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="BoardButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/board_button_background</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <!-- Дополнительные атрибуты стиля кнопки -->
+    <style name="BoardButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/skiing</item>
+        <item name="cornerRadius">8dp</item>
     </style>
 </resources>
