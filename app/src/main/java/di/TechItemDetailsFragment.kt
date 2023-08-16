@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.snowboardexperience.R
 import com.example.snowboardexperience.databinding.FragmentTechItemDetailsBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @Suppress("DEPRECATION")
 class TechItemDetailsFragment : Fragment() {
@@ -16,6 +19,8 @@ class TechItemDetailsFragment : Fragment() {
     private var _binding: FragmentTechItemDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var techItem: TechItem
+    @Inject
+    lateinit var techItemDao: TechItemDao
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +42,7 @@ class TechItemDetailsFragment : Fragment() {
         binding.techItemDescriptionDetails.text = description
 
         arguments?.getParcelable<TechItem>(ARG_TECH_ITEM)?.let {
-            // Используйте techItem для установки деталей в вашем фрагменте
+            // Используем techItem для установки деталей во фрагменте
             setTechItemDetails()
         }
         binding.detailsFabFavorites.setOnClickListener {
@@ -58,7 +63,7 @@ class TechItemDetailsFragment : Fragment() {
             //Кладем данные о нашем фильме
             intent.putExtra(
                 Intent.EXTRA_TEXT,
-                "Check out this film: ${techItem.title} \n\n ${techItem.description}"
+                "Check out this item: ${techItem.title} \n\n ${techItem.description}"
             )
             //УКазываем MIME тип, чтобы система знала, какое приложения предложить
             intent.type = "text/plain"
@@ -71,7 +76,6 @@ class TechItemDetailsFragment : Fragment() {
         // Получаем наш объект TechItem из переданных аргументов
         this.techItem = arguments?.getParcelable(ARG_TECH_ITEM) ?: return
 
-        // Остальной код остается без изменений
         binding.detailsToolbar.title = this.techItem.title
         binding.techItemImageDetails.setImageResource(this.techItem.img)
         binding.techItemDescriptionDetails.text = this.techItem.description
@@ -105,13 +109,31 @@ class TechItemDetailsFragment : Fragment() {
 
     private fun setupFabFavorites() {
         binding.detailsFabFavorites.setOnClickListener {
-            addToFavorites(techItem)
-            showSnackBar("Добавлено в избранное")
+            val techItemEntity = techItem.title?.let { it1 ->
+                techItem.description?.let { it2 ->
+                    TechItemEntity(
+                        title = it1,
+                        img = techItem.img,
+                        description = it2
+                    )
+                }
+            }
+
+            lifecycleScope.launch {
+                addToFavorites(techItemEntity)
+                showSnackBar("Добавлено в избранное")
+                val favoritesFragment =
+                    parentFragmentManager.findFragmentByTag(FavoritesFragment.TAG) as? FavoritesFragment
+                favoritesFragment?.updateFavoritesList()
+            }
         }
     }
 
-    private fun addToFavorites(techItem: TechItem) {
-        FavoritesManager.addFavorite(techItem)
+    private suspend fun addToFavorites(techItemEntity: TechItemEntity?) {
+        // Добавляем элемент в базу данных
+        if (techItemEntity != null) {
+            techItemDao.insertTechItem(techItemEntity)
+        }
     }
 
     private fun showSnackBar(message: String) {

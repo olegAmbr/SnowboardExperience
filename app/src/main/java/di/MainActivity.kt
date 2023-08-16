@@ -10,14 +10,24 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var appComponent: AppComponent
 
     @Inject
     lateinit var dependency: Dependency
+    lateinit var techItemDao: TechItemDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Инициализация Dagger компонента для активити
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(applicationContext)) // Передаем ApplicationContext
+            .build()
+
+        appComponent.inject(this)
+
 
         // Установить Toolbar как ActionBar
         setSupportActionBar(binding.topAppBarMenu)
@@ -30,10 +40,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, HomeFragment())
                 .commit()
-
-            // Инициализация Dagger
-            val component = DaggerAppComponent.builder().build()
-            component.inject(this)
 
             // Теперь вы можете использовать someDependency в активности
             val message = Dependency()

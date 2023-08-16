@@ -8,8 +8,7 @@
     <string name="menu_settings_title">Snow</string>
     <string name="skiing">КАТАНИЕ,\nТЕХНИКА</string>
     <string name="equip">СНАРЯЖЕНИЕ</string>
-    <string name="conditions">УСЛОВИЯ
-        КАТАНИЯ</string>
+    <string name="conditions">УСЛОВИЯ\nКАТАНИЯ</string>
     <string name="places">ГОРНОЛЫЖНЫЕ\nКУРОРТЫ</string>
     <string name="fab_favorites_description">В избранное</string>
     <string name="share_action_description">Поделиться</string>
