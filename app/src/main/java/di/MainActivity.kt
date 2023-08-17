@@ -10,23 +10,36 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var appComponent: AppComponent
+
     @Inject
     lateinit var dependency: Dependency
+    lateinit var techItemDao: TechItemDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Инициализация Dagger компонента для активити
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(applicationContext)) // Передаем ApplicationContext
+            .build()
+
+        appComponent.inject(this)
+
+
+        // Установить Toolbar как ActionBar
+        setSupportActionBar(binding.topAppBarMenu)
+
+        // Установить своё собственное название для активити
+        supportActionBar?.title = "Snow"
+
         if (savedInstanceState == null) {
             // При первом создании активности добавляем MainFragment в контейнер
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, HomeFragment())
                 .commit()
-
-            // Инициализация Dagger
-            val component = AppComponent.builder().build()
-            component.inject(this)
 
             // Теперь вы можете использовать someDependency в активности
             val message = Dependency()
@@ -37,8 +50,41 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+        fun changeFragment(fragment: Fragment, tag: String) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, fragment, tag)
+                .addToBackStack(null)
+                .commit()
+        }
+
+        fun checkFragmentExistence(tag: String): Fragment? =
+            supportFragmentManager.findFragmentByTag(tag)
+
+        binding.bottomNavigationMenu.setOnNavigationItemSelectedListener {
+
+            when (it.itemId) {
+                R.id.home -> {
+                    val tag = "home"
+                    val fragment = checkFragmentExistence(tag)
+                    //В первом параметре, если фрагмент не найден и метод вернул null, то с помощью
+                    //элвиса мы вызываем создание нового фрагмента
+                    changeFragment(fragment ?: HomeFragment(), tag)
+                    true
+                }
+                R.id.favorites -> {
+                    val tag = "favorites"
+                    val fragment = checkFragmentExistence(tag)
+                    changeFragment(fragment ?: FavoritesFragment(), tag)
+                    true
+                }
+
+                else -> false
+            }
+        }
 
     }
+
     fun navigateTo(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
