@@ -1,7 +1,6 @@
 package di
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.snowboardexperience.R
@@ -14,7 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var dependency: Dependency
-    lateinit var techItemDao: TechItemDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +26,6 @@ class MainActivity : AppCompatActivity() {
 
         appComponent.inject(this)
 
-
         // Установить Toolbar как ActionBar
         setSupportActionBar(binding.topAppBarMenu)
 
@@ -40,50 +37,40 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, HomeFragment())
                 .commit()
-
-            // Теперь вы можете использовать someDependency в активности
-            val message = Dependency()
-            Log.d("MainActivity", message.toString())
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HomeFragment())
-                .commit()
         }
 
-        fun changeFragment(fragment: Fragment, tag: String) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, fragment, tag)
-                .addToBackStack(null)
-                .commit()
-        }
-
-        fun checkFragmentExistence(tag: String): Fragment? =
-            supportFragmentManager.findFragmentByTag(tag)
-
-        binding.bottomNavigationMenu.setOnNavigationItemSelectedListener {
-
-            when (it.itemId) {
-                R.id.home -> {
-                    val tag = "home"
-                    val fragment = checkFragmentExistence(tag)
-                    //В первом параметре, если фрагмент не найден и метод вернул null, то с помощью
-                    //элвиса мы вызываем создание нового фрагмента
-                    changeFragment(fragment ?: HomeFragment(), tag)
-                    true
-                }
-                R.id.favorites -> {
-                    val tag = "favorites"
-                    val fragment = checkFragmentExistence(tag)
-                    changeFragment(fragment ?: FavoritesFragment(), tag)
-                    true
-                }
-
-                else -> false
+        binding.bottomNavigationMenu.setOnNavigationItemSelectedListener { menuItem ->
+            val tag = when (menuItem.itemId) {
+                R.id.home -> "home"
+                R.id.favorites -> "favorites"
+                R.id.settings -> "settings"
+                else -> return@setOnNavigationItemSelectedListener false
             }
-        }
 
+            val fragment = checkFragmentExistence(tag)
+            changeFragment(fragment ?: createFragment(tag), tag)
+            true
+        }
     }
+
+    private fun createFragment(tag: String): Fragment {
+        return when (tag) {
+            "home" -> HomeFragment()
+            "favorites" -> FavoritesFragment()
+            "settings" -> SettingsFragment()
+            else -> throw IllegalArgumentException("Unknown fragment tag: $tag")
+        }
+    }
+
+    private fun changeFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment, tag)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun checkFragmentExistence(tag: String): Fragment? =
+        supportFragmentManager.findFragmentByTag(tag)
 
     fun navigateTo(fragment: Fragment) {
         supportFragmentManager.beginTransaction()

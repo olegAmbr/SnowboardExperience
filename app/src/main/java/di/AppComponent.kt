@@ -9,8 +9,4 @@ interface AppComponent {
 
     fun inject(mainActivity: MainActivity)
     fun injectDependency(dependency: Dependency)
-
-    fun techItemDao(): TechItemDao
-    fun techItemDatabase(): TechItemDatabase // Метод для получения экземпляра базы данных
-
 }

@@ -1,7 +1,10 @@
 package di
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.snowboardexperience.R
 import com.example.snowboardexperience.databinding.FragmentTechItemDetailsBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @Suppress("DEPRECATION")
 class TechItemDetailsFragment : Fragment() {
@@ -19,8 +23,7 @@ class TechItemDetailsFragment : Fragment() {
     private var _binding: FragmentTechItemDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var techItem: TechItem
-    @Inject
-    lateinit var techItemDao: TechItemDao
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,6 +31,7 @@ class TechItemDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTechItemDetailsBinding.inflate(inflater, container, false)
+        sharedPreferences = requireContext().getSharedPreferences("favorites", Context.MODE_PRIVATE)
         setupFabFavorites()
         return binding.root
     }
@@ -42,62 +46,77 @@ class TechItemDetailsFragment : Fragment() {
         binding.techItemDescriptionDetails.text = description
 
         arguments?.getParcelable<TechItem>(ARG_TECH_ITEM)?.let {
-            // Используем techItem для установки деталей во фрагменте
+            techItem = it
             setTechItemDetails()
-        }
-        binding.detailsFabFavorites.setOnClickListener {
-            if (!this.techItem.isInFavorites) {
-                binding.detailsFabFavorites.setImageResource(R.drawable.round_favorite)
-                techItem.isInFavorites = true
-            } else {
-                binding.detailsFabFavorites.setImageResource(R.drawable.round_favorite_border)
-                techItem.isInFavorites = false
-            }
         }
 
         binding.detailsFabShare.setOnClickListener {
-            //Создаем интент
             val intent = Intent()
-            //Укзываем action с которым он запускается
             intent.action = Intent.ACTION_SEND
-            //Кладем данные о нашем фильме
             intent.putExtra(
                 Intent.EXTRA_TEXT,
                 "Check out this item: ${techItem.title} \n\n ${techItem.description}"
             )
-            //УКазываем MIME тип, чтобы система знала, какое приложения предложить
             intent.type = "text/plain"
-            //Запускаем наше активити
             startActivity(Intent.createChooser(intent, "Share To:"))
         }
     }
 
     private fun setTechItemDetails() {
-        // Получаем наш объект TechItem из переданных аргументов
-        this.techItem = arguments?.getParcelable(ARG_TECH_ITEM) ?: return
-
-        binding.detailsToolbar.title = this.techItem.title
-        binding.techItemImageDetails.setImageResource(this.techItem.img)
-        binding.techItemDescriptionDetails.text = this.techItem.description
+        binding.detailsToolbar.title = techItem.title
+        binding.techItemImageDetails.setImageResource(techItem.img)
+        binding.techItemDescriptionDetails.text = techItem.description
 
         binding.detailsFabFavorites.setImageResource(
-            if (this.techItem.isInFavorites) R.drawable.round_favorite
+            if (techItem.isInFavorites) R.drawable.round_favorite
             else R.drawable.round_favorite_border
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun toggleFavoriteState() {
+        techItem.isInFavorites = !techItem.isInFavorites
+        val favoritesFragment = parentFragmentManager.findFragmentByTag(FavoritesFragment.TAG) as? FavoritesFragment
+        favoritesFragment?.updateFavoritesList()
+        binding.detailsFabFavorites.setImageResource(
+            if (techItem.isInFavorites) R.drawable.round_favorite
+            else R.drawable.round_favorite_border
+        )
+        saveFavoriteTechItemsToSharedPreferences()
+        updateFavoriteStateInSharedPreferences()
+    }
+
+    private fun updateFavoriteStateInSharedPreferences() {
+        val favoriteTechItems = getFavoriteTechItemsFromSharedPreferences()
+        val gson = Gson()
+        val favoriteTechItemsJson = gson.toJson(favoriteTechItems)
+        sharedPreferences.edit().putString("favorite_tech_items", favoriteTechItemsJson).apply()
+    }
+
+    private fun getFavoriteTechItemsFromSharedPreferences(): MutableList<TechItem> {
+        val savedTechItemsJson = sharedPreferences.getString("favorite_tech_items", null)
+        return if (!savedTechItemsJson.isNullOrBlank()) {
+            try {
+                val typeToken = object : TypeToken<MutableList<TechItem>>() {}.type
+                Gson().fromJson(savedTechItemsJson, typeToken)
+            } catch (e: Exception) {
+                Log.e("FavoritesFragment", "Error deserializing tech items", e)
+                mutableListOf()
+            }
+        } else {
+            mutableListOf()
+        }
+    }
+
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     companion object {
         private const val ARG_TECH_ITEM = "tech_item"
         private const val ARG_IMG = "img"
-        private const val ARG_TITLE = "title"
         private const val ARG_DESCRIPTION = "description"
 
-        // Перегруженная версия для передачи TechItem
         fun newInstance(techItem: TechItem): TechItemDetailsFragment {
             val fragment = TechItemDetailsFragment()
             val args = Bundle()
@@ -109,34 +128,28 @@ class TechItemDetailsFragment : Fragment() {
 
     private fun setupFabFavorites() {
         binding.detailsFabFavorites.setOnClickListener {
-            val techItemEntity = techItem.title?.let { it1 ->
-                techItem.description?.let { it2 ->
-                    TechItemEntity(
-                        title = it1,
-                        img = techItem.img,
-                        description = it2
-                    )
-                }
-            }
-
-            lifecycleScope.launch {
-                addToFavorites(techItemEntity)
-                showSnackBar("Добавлено в избранное")
-                val favoritesFragment =
-                    parentFragmentManager.findFragmentByTag(FavoritesFragment.TAG) as? FavoritesFragment
-                favoritesFragment?.updateFavoritesList()
-            }
+            toggleFavoriteState()
+            val favoritesFragment =
+                parentFragmentManager.findFragmentByTag(FavoritesFragment.TAG) as? FavoritesFragment
+            favoritesFragment?.updateFavoritesList()
+            showSnackBar(if (techItem.isInFavorites) "Added to Favorites" else "Removed from Favorites")
         }
     }
 
-    private suspend fun addToFavorites(techItemEntity: TechItemEntity?) {
-        // Добавляем элемент в базу данных
-        if (techItemEntity != null) {
-            techItemDao.insertTechItem(techItemEntity)
-        }
+    private fun saveFavoriteTechItemsToSharedPreferences() {
+        val favoriteTechItems = getFavoriteTechItemsFromSharedPreferences()
+        val gson = Gson()
+        val favoriteTechItemsJson = gson.toJson(favoriteTechItems)
+        sharedPreferences.edit().putString("favorite_tech_items", favoriteTechItemsJson).apply()
     }
 
-    private fun showSnackBar(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    override fun onStop() {
+        super.onStop()
+        saveFavoriteTechItemsToSharedPreferences()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

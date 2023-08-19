@@ -1,7 +1,9 @@
 package di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -17,19 +19,13 @@ class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideTechItemDatabase(context: Context): TechItemDatabase {
-        return Room.databaseBuilder(
-            context,
-            TechItemDatabase::class.java,
-            "tech_item_database"
-        ).build()
+    fun provideSharedPreferences(context: Context): SharedPreferences {
+        return context.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
     }
 
     @Provides
     @Singleton
-    fun provideTechItemDao(appDatabase: TechItemDatabase): TechItemDao {
-        return appDatabase.techItemDao()
+    fun provideGson(): Gson {
+        return Gson()
     }
-
-    // ...
 }
