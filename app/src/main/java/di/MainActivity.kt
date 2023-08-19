@@ -67,8 +67,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.home -> {
                     val tag = "home"
                     val fragment = checkFragmentExistence(tag)
-                    //В первом параметре, если фрагмент не найден и метод вернул null, то с помощью
-                    //элвиса мы вызываем создание нового фрагмента
+                    //В первом параметре, если фрагмент не найден и метод вернул null, то с помощью элвиса мы вызываем создание нового фрагмента
                     changeFragment(fragment ?: HomeFragment(), tag)
                     true
                 }
@@ -76,6 +75,12 @@ class MainActivity : AppCompatActivity() {
                     val tag = "favorites"
                     val fragment = checkFragmentExistence(tag)
                     changeFragment(fragment ?: FavoritesFragment(), tag)
+                    true
+                }
+                R.id.settings -> {
+                    val tag = "settings"
+                    val fragment = checkFragmentExistence(tag)
+                    changeFragment(fragment ?: SettingsFragment(), tag)
                     true
                 }
 

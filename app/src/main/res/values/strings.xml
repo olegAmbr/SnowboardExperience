@@ -12,4 +12,5 @@
     <string name="places">ГОРНОЛЫЖНЫЕ\nКУРОРТЫ</string>
     <string name="fab_favorites_description">В избранное</string>
     <string name="share_action_description">Поделиться</string>
+    <string name="Settings">Настройки</string>
 </resources>
