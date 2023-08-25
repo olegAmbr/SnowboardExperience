@@ -1,6 +1,9 @@
 package di
 
+<<<<<<< HEAD
 import android.annotation.SuppressLint
+=======
+>>>>>>> origin/sprint_8
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,16 +18,24 @@ import com.example.snowboardexperience.R
 import com.example.snowboardexperience.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
+<<<<<<< HEAD
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private lateinit var switchDarkTheme: Switch
     @SuppressLint("UseSwitchCompatOrMaterialCode")
+=======
+    private lateinit var switchDarkTheme: Switch
+>>>>>>> origin/sprint_8
     private lateinit var switchSystemTheme: Switch
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
+<<<<<<< HEAD
     ): View {
+=======
+    ): View? {
+>>>>>>> origin/sprint_8
         val binding: FragmentSettingsBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_settings, container, false
         )
