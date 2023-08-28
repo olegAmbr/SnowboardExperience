@@ -14,11 +14,9 @@
         android:icon="@drawable/round_favorite_border"
         android:title="@string/favorites"
         app:showAsAction="withText" />
-
     <item
-        android:id="@+id/selections"
-        android:icon="@drawable/round_arrow_back_ios"
-        android:title="@string/back"
+        android:id="@+id/settings"
+        android:icon="@drawable/round_settings"
+        android:title="@string/Settings"
         app:showAsAction="withText" />
-
 </menu>

@@ -1,21 +1,12 @@
 package di
 
 import dagger.Component
+import javax.inject.Singleton
 
-@Component(modules = [Dependency::class])
+@Singleton
+@Component(modules = [AppModule::class])
 interface AppComponent {
 
     fun inject(mainActivity: MainActivity)
     fun injectDependency(dependency: Dependency)
-
-    @Component.Builder
-    interface Builder {
-        fun build(): AppComponent
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return builder()
-        }
-    }
 }
