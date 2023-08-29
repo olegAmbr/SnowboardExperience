@@ -40,25 +40,27 @@ class FavoritesFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Загрузка избранных технологических элементов из Shared Preferences
-        getFavoriteTechItemsFromSharedPreferences()
-
         // Обновление RecyclerView загруженными избранными элементами
         updateFavoritesList()
+
+        binding.rvFavorites.adapter?.notifyDataSetChanged()
 
         // Настройка RecyclerView
         setupRecyclerView()
     }
 
     private fun setupRecyclerView() {
+        // Получение списка избранных элементов из Shared Preferences
+        var favorites: MutableList<TechItem> = getFavoriteTechItemsFromSharedPreferences()
         // Настройка RecyclerView с списком избранных технологических элементов
         val adapter = TechRVAdapter(favorites, object : TechItemClickListener {
             override fun onItemClick(techItem: TechItem) {
                 // Обработка нажатия на элемент для отображения деталей во втором фрагменте
-                val detailsFragment = TechItemDetailsFragment.newInstance(techItem, techItem.isInFavorites)
+                val detailsFragment = TechItemDetailsFragment.newInstance(techItem, !techItem.isInFavorites)
                 parentFragmentManager.beginTransaction()
                     .add(R.id.container, detailsFragment)
                     .addToBackStack(null)
@@ -72,6 +74,7 @@ class FavoritesFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateFavoritesList() {
+        Log.d("FavoritesFragment", "Updating favorites list")
         // Очистка текущего списка избранных и заполнение его данными из Shared Preferences
         favorites.clear()
         favorites.addAll(getFavoriteTechItemsFromSharedPreferences())

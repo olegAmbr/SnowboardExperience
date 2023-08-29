@@ -14,6 +14,8 @@ import com.example.snowboardexperience.databinding.FragmentTechItemDetailsBindin
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import di.FavoritesFragment.Companion.TAG
+
 
 @Suppress("DEPRECATION")
 class TechItemDetailsFragment : Fragment() {
@@ -81,9 +83,10 @@ class TechItemDetailsFragment : Fragment() {
     // Изменение состояния "Избранное" и обновление отображения
     private fun toggleFavoriteState() {
         techItem.isInFavorites = !techItem.isInFavorites
+        Log.d(TAG, "Toggling favorite state to: ${techItem.isInFavorites}")
         updateFavoriteStateInSharedPreferences()
         saveFavoriteTechItemsToSharedPreferences()
-        val favoritesFragment = parentFragmentManager.findFragmentByTag(FavoritesFragment.TAG) as? FavoritesFragment
+        val favoritesFragment = parentFragmentManager.findFragmentByTag(TAG) as? FavoritesFragment
         favoritesFragment?.updateFavoritesList()
         binding.detailsFabFavorites.setImageResource(
             if (techItem.isInFavorites) R.drawable.round_favorite
@@ -93,6 +96,7 @@ class TechItemDetailsFragment : Fragment() {
 
     // Обновление состояния "Избранное" в SharedPreferences
     private fun updateFavoriteStateInSharedPreferences() {
+        Log.d("TechItemDetailsFragment", "Updating favorite state in SharedPreferences")
         val favoriteTechItems = getFavoriteTechItemsFromSharedPreferences()
         val gson = Gson()
         val favoriteTechItemsJson = gson.toJson(favoriteTechItems)
@@ -125,7 +129,7 @@ class TechItemDetailsFragment : Fragment() {
         private const val ARG_TECH_ITEM = "tech_item"
         private const val ARG_IMG = "img"
         private const val ARG_DESCRIPTION = "description"
-        private const val ARG_IS_IN_FAVORITES = "is_in_favorites"
+        private const val ARG_IS_IN_FAVORITES = "favorite_tech_items"
 
         // Создание нового экземпляра фрагмента с передачей аргументов
         fun newInstance(techItem: TechItem, isInFavorites: Boolean): TechItemDetailsFragment {
@@ -141,16 +145,18 @@ class TechItemDetailsFragment : Fragment() {
     // Настройка кнопки "Избранное"
     private fun setupFabFavorites() {
         binding.detailsFabFavorites.setOnClickListener {
-            toggleFavoriteState()
             val favoritesFragment =
-                parentFragmentManager.findFragmentByTag(FavoritesFragment.TAG) as? FavoritesFragment
-            favoritesFragment?.updateFavoritesList()
+                parentFragmentManager.findFragmentByTag(TAG) as? FavoritesFragment
+            toggleFavoriteState() // Переключение состояния избранного
+            updateFavoriteStateInSharedPreferences() // Сохранение в Shared Preferences
+            favoritesFragment?.updateFavoritesList() // Обновление списка избранных
             showSnackBar(if (techItem.isInFavorites) "Added to Favorites" else "Removed from Favorites")
         }
     }
 
     // Сохранение списка "Избранное" в SharedPreferences при остановке фрагмента
     private fun saveFavoriteTechItemsToSharedPreferences() {
+        Log.d("TechItemDetailsFragment", "Saving favorite tech items to SharedPreferences")
         val favoriteTechItems = getFavoriteTechItemsFromSharedPreferences()
         val gson = Gson()
         val favoriteTechItemsJson = gson.toJson(favoriteTechItems)
@@ -159,14 +165,13 @@ class TechItemDetailsFragment : Fragment() {
 
     // Сохранение списка "Избранное" в SharedPreferences при остановке фрагмента
     override fun onStop() {
-        saveFavoriteTechItemsToSharedPreferences()
         super.onStop()
     }
 
     // Очистка привязки View Binding при уничтожении фрагмента
     override fun onDestroyView() {
-        saveFavoriteTechItemsToSharedPreferences()
         super.onDestroyView()
         _binding = null
     }
+
 }
