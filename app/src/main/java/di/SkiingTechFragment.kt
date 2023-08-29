@@ -16,7 +16,8 @@ class SkiingTechFragment : Fragment() {
     private var _binding: FragmentSkiingTechBinding? = null
     private val binding get() = _binding!!
 
-    val items: List<TechItem> = listOf(
+    private val items: List<TechItem> = listOf(
+        // Список избранных технологических элементов
         TechItem(
             "Фрирайд (Freeride)",
             R.drawable.freeride,
@@ -62,6 +63,7 @@ class SkiingTechFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Инфлейт макета фрагмента с использованием Data Binding
         _binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_skiing_tech, container, false)
         return binding.root
@@ -70,9 +72,13 @@ class SkiingTechFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Создание адаптера и установка обработчика нажатий
         val adapter = TechRVAdapter(items, object : TechItemClickListener {
             override fun onItemClick(techItem: TechItem) {
-                val detailsFragment = TechItemDetailsFragment.newInstance(techItem)
+                val detailsFragment = TechItemDetailsFragment.newInstance(
+                    techItem,
+                    techItem.isInFavorites
+                )
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.container, detailsFragment)
                     .addToBackStack(null)
@@ -80,6 +86,7 @@ class SkiingTechFragment : Fragment() {
             }
         })
 
+        // Настройка RecyclerView
         binding.techRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)

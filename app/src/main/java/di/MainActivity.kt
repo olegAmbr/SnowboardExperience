@@ -8,6 +8,7 @@ import com.example.snowboardexperience.databinding.ActivityMainBinding
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var appComponent: AppComponent
 
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         // Установить Toolbar как ActionBar
         setSupportActionBar(binding.topAppBarMenu)
 
-        // Установить своё собственное название для активити
+        // Установить собственное название для активити
         supportActionBar?.title = "Snow"
 
         if (savedInstanceState == null) {
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+        // Обработчик для нижней навигационной панели
         binding.bottomNavigationMenu.setOnNavigationItemSelectedListener { menuItem ->
             val tag = when (menuItem.itemId) {
                 R.id.home -> "home"
@@ -53,15 +55,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Создание фрагмента по тегу
     private fun createFragment(tag: String): Fragment {
         return when (tag) {
             "home" -> HomeFragment()
             "favorites" -> FavoritesFragment()
             "settings" -> SettingsFragment()
-            else -> throw IllegalArgumentException("Unknown fragment tag: $tag")
+            else -> throw IllegalArgumentException("Неизвестный тег фрагмента: $tag")
         }
     }
 
+    // Замена текущего фрагмента новым и добавление в стек возврата
     private fun changeFragment(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment, tag)
@@ -69,9 +73,11 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    // Проверка наличия фрагмента с заданным тегом
     private fun checkFragmentExistence(tag: String): Fragment? =
         supportFragmentManager.findFragmentByTag(tag)
 
+    // Навигация к указанному фрагменту
     fun navigateTo(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)

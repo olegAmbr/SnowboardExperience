@@ -2,7 +2,6 @@ package di
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.room.Room
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides

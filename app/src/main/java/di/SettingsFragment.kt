@@ -15,6 +15,7 @@ import com.example.snowboardexperience.R
 import com.example.snowboardexperience.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
+    // Переключатели для настроек темы
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private lateinit var switchDarkTheme: Switch
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -25,34 +26,38 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Инфлейт макета фрагмента с использованием Data Binding
         val binding: FragmentSettingsBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_settings, container, false
         )
 
+        // Привязка переключателей к разметке
         switchDarkTheme = binding.switchDarkTheme
         switchSystemTheme = binding.switchSystemTheme
 
+        // Инициализация Shared Preferences для хранения настроек
         val sharedPreferences = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
 
+        // Установка состояния переключателей на основе сохраненных настроек
         switchDarkTheme.isChecked = sharedPreferences.getBoolean("darkThemeEnabled", false)
         switchSystemTheme.isChecked = sharedPreferences.getBoolean("systemThemeEnabled", false)
 
+        // Обработчик для переключателя "Темная тема"
         switchDarkTheme.setOnCheckedChangeListener { _, isChecked ->
             with(sharedPreferences.edit()) {
                 putBoolean("darkThemeEnabled", isChecked)
                 apply()
             }
-            // Примените настройки темы
-            // (вызов метода или обновление ресурсов темы)
+            // Применение настроек темы (например, обновление ресурсов темы)
         }
 
+        // Обработчик для переключателя "Системная тема"
         switchSystemTheme.setOnCheckedChangeListener { _, isChecked ->
             with(sharedPreferences.edit()) {
                 putBoolean("systemThemeEnabled", isChecked)
                 apply()
             }
-            // Примените настройки темы
-            // (вызов метода или обновление ресурсов темы)
+            // Применение настроек темы (например, обновление ресурсов темы)
         }
 
         return binding.root
